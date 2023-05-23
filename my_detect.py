@@ -319,7 +319,7 @@ class yolo_detector:
         self.device = select_device('0')
         self.model = DetectMultiBackend(weights, device=self.device)  # 加载模型
         stride, names, pt = self.model.stride, self.model.names, self.model.pt
-        self.stride, self.pt = stride, pt
+        self.stride, self.names, self.pt = stride, names, pt
         self.imgsz = check_img_size(imgsz, s=stride)  # check image size
         half &= pt and self.device.type != 'cpu'  # half precision only supported by PyTorch on CUDA
         self.half = half
@@ -355,6 +355,7 @@ class yolo_detector:
         pred = non_max_suppression(pred, self.conf_thres, self.iou_thres, max_det=5)
 
         results = []
+        annotator = Annotator(im0, line_width=3, example=str(self.names))
         for i, det in enumerate(pred):
             if len(det):
                 # Rescale boxes from img_size to im0 size
@@ -364,15 +365,21 @@ class yolo_detector:
 
                 line = (cls, xyxy, conf)
                 print(line)
+                results.append(line)
 
+                c = int(cls)  # integer class
+                label = f'{self.names[c]} {conf:.2f}'
+                annotator.box_label(xyxy, label, color=colors(c, True))
 
-            if det.numel():
-                x1, y1, x2, y2 = int(det[0, 0].item()), int(det[0, 1].item()), int(det[0, 2].item()), int(
-                    det[0, 3].item())
-                lu = (x1, y1)
-                rd = (x2, y2)
-                results.append((lu, rd))
-        return results,im
+            im0 = annotator.result()
+
+            # if det.numel():
+            #     x1, y1, x2, y2 = int(det[0, 0].item()), int(det[0, 1].item()), int(det[0, 2].item()), int(
+            #         det[0, 3].item())
+            #     lu = (x1, y1)
+            #     rd = (x2, y2)
+            #     results.append((lu, rd))
+        return im0, results
 
 
 def main(opt, image):

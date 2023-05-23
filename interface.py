@@ -2,23 +2,19 @@ from my_detect import parse_opt, main, yolo_detector
 import cv2
 import time
 
-cap = cv2.VideoCapture(0)
-a = yolo_detector()
-while True:
-    rec, img = cap.read()
-    print(img.shape)
+yd = yolo_detector()
+def start_fire_detect2(image):
+
     # img = cv2.imread('fire_000082.jpg')
     # img = cv2.resize(img, (640, 480))
-    print(img.shape)
-    results,im = a.run(img)
+    im0, results = yd.run(img)
 
-    if results:
-        for i, pts in enumerate(results):
-            cv2.rectangle(img, pts[0], pts[1], (0, 0, 255), 2)
-    cv2.imshow("video", img)
+    # if results:
+    #     for i, pts in enumerate(results):
+    #         cv2.rectangle(img, pts[0], pts[1], (0, 0, 255), 2)
+    # cv2.imshow("video", im0)
+    return im0, results
 
-    if cv2.waitKey(1) == ord('q'):
-        break
 
 def start_fire_detect(image):
     opt = parse_opt()
@@ -58,4 +54,10 @@ def start_fire_detect(image):
 if __name__ == '__main__':
     image = cv2.imread('fire_000082.jpg')
     print(type(image))
-    start_fire_detect(image)
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, img = cap.read()
+        annotated_image, results = start_fire_detect2(img)
+        cv2.imshow("Window", annotated_image)
+        if cv2.waitKey(1) == ord('q'):
+            break
