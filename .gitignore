@@ -1,1 +1,7 @@
 fogo/
+runs\detect
+main.py
+my_detect.py
+detect.py
+detected.jpg
+input.jpg
