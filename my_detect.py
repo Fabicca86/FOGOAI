@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
-"""
+'''
 Run inference on images, videos, directories, streams, etc.
 
 Usage - sources:
@@ -23,7 +23,7 @@ Usage - formats:
                                          yolov5s.pb                 # TensorFlow GraphDef
                                          yolov5s.tflite             # TensorFlow Lite
                                          yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
-"""
+'''
 
 import argparse
 import os
