@@ -5,3 +5,37 @@ my_detect.py
 detect.py
 detected.jpg
 input.jpg
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.env
+venv/
+env/
+
+# Logs and temp files
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Ignored directories
+node_modules/
+dist/
+build/
+
+# Image files
+*.jpg
+*.png
+*.gif
+*.svg
