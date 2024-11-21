@@ -15,7 +15,6 @@ def detect_fire():
     file_path = 'input.jpg'
     file.save(file_path)
     print("Image saved...")
-
     frame = cv2.imread(file_path)
     print("Image loaded...")
 
