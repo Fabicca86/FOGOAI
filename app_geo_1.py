@@ -2,10 +2,11 @@ from flask import Flask, request, send_file, jsonify
 import cv2
 from flask_cors import CORS
 import torch
-#import numpy as np
 import json
 from io import BytesIO
 import base64
+import pandas as pd
+from metrics_app import plot_detection_metrics
 
 app = Flask(__name__)
 CORS(app)
@@ -49,9 +50,29 @@ def detect_fire():
     location = request.form.get('location', "{}") 
     gps_info = json.loads(location) # Use json.loads() for safety 
     print(f"GPS Info: {gps_info}") 
+    ##TESTEEEE
+    # Log results to a CSV file 
+    df = pd.DataFrame({ 
+         'class': results.pred[0][:, -1].cpu().numpy(), 
+         'confidence': results.pred[0][:, 4].cpu().numpy(), 
+         'x1': results.pred[0][:, 0].cpu().numpy(), 
+         'y1': results.pred[0][:, 1].cpu().numpy(), 
+         'x2': results.pred[0][:, 2].cpu().numpy(), 
+         'y2': results.pred[0][:, 3].cpu().numpy() 
+    }) 
+    df.to_csv('detection_results.csv', mode='a', header=False, index=False)
+
     return jsonify({ 'image': encoded_image, # Send base64 encoded image
                      'gps_info': gps_info 
                      }) 
+
+@app.route('/plot_metrics', methods=['GET']) 
+def plot_metrics(): 
+    plot_detection_metrics() 
+    with open('detection_metrics.png', 'rb') as f: 
+        encoded_image = base64.b64encode(f.read()).decode('utf-8') 
+        return jsonify({'plot': encoded_image})
+
 if __name__ == '__main__': 
         print("Running Flask app...") 
         app.run(debug=True)
