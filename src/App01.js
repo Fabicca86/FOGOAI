@@ -4,7 +4,6 @@ function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     const setupCamera = async () => {
@@ -17,21 +16,7 @@ function App() {
       }
     };
 
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
-        });
-      } else {
-        console.error('Geolocalização não é suportada pelo seu navegador.');
-      }
-    };
-
     setupCamera();
-    getLocation();
   }, []);
 
   const captureImage = () => {
@@ -46,21 +31,26 @@ function App() {
     canvas.toBlob((blob) => {
       const formData = new FormData();
       formData.append('image', blob, 'capture.jpg');
-      formData.append('location', JSON.stringify(location));  // Adiciona a localização ao formulário
 
-      fetch('http://localhost:5000/detect', {
-        method: 'POST',
-        body: formData,
-      })
-        .then((response) => response.json())  // Espera uma resposta JSON
-        .then((data) => {
-          const url = URL.createObjectURL(data.image);
-          setImage(url);
-          console.log('Informações de localização:', data.gps_info);  // Exibe as informações de localização
-        })
-        .catch((error) => {
-          console.error('Erro ao fazer a solicitação fetch:', error);
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          fetch('http://localhost:5000/detect', {
+            method: 'POST',
+            body: formData,
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const url = URL.createObjectURL(blob);
+              setImage(url);
+            })
+            .catch((error) => {
+              console.error('Erro ao fazer a solicitação fetch:', error);
+            });
+        }).catch((error) => {
+          console.error('Erro ao reproduzir o vídeo:', error);
         });
+      }
     });
   };
 

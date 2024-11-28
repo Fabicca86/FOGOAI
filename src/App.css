@@ -28,11 +28,27 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Estilos do Botão "Detect Fire" */
+.detect-button {
+  font-size: 24px; /* Tamanho maior do texto */
+  padding: 20px 40px; /* Área clicável maior */
+  background-color: #ff5733; /* Cor de fundo chamativa */
+  color: white; /* Cor do texto */
+  border: none; /* Remove borda */
+  border-radius: 10px; /* Bordas mais arredondadas */
+  cursor: pointer; /* Cursor de ponteiro ao passar sobre o botão */
+  margin: 20px; /* Espaço em volta do botão */
+}
+
+.detect-button:hover {
+  background-color: #ff2e00; /* Cor de fundo ao passar o mouse */
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Espaço entre os elementos */
+  margin-top: 20px;
 }

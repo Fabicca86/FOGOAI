@@ -2,7 +2,10 @@ from flask import Flask, request, send_file, jsonify
 import cv2
 from flask_cors import CORS
 import torch
-import numpy as np
+#import numpy as np
+import json
+from io import BytesIO
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -39,23 +42,16 @@ def detect_fire():
     else:
         print("Erro: Imagem renderizada não encontrada")
         return "Erro ao processar a imagem", 500
-
-    annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
-
-    temp_file = 'detected.jpg'
-    cv2.imwrite(temp_file, annotated_frame)
-    print("Annotated image saved...")
-
-    location = request.form.get('location', "{}")  # Obtém a localização do formulário
-    gps_info = eval(location)  # Avalia a string JSON como um dicionário
-
-    print(f"GPS Info: {gps_info}")
-
-    return jsonify({
-        'image': temp_file,
-        'gps_info': gps_info
-    })
-
-if __name__ == '__main__':
-    print("Running Flask app...")
-    app.run(debug=True)
+    
+    annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR) 
+    _, buffer = cv2.imencode('.jpg', annotated_frame) 
+    encoded_image = base64.b64encode(buffer).decode('utf-8') 
+    location = request.form.get('location', "{}") 
+    gps_info = json.loads(location) # Use json.loads() for safety 
+    print(f"GPS Info: {gps_info}") 
+    return jsonify({ 'image': encoded_image, # Send base64 encoded image
+                     'gps_info': gps_info 
+                     }) 
+if __name__ == '__main__': 
+        print("Running Flask app...") 
+        app.run(debug=True)

@@ -23,7 +23,24 @@ A interface que implementei pessoalmente: a função start_fire_detect() em inte
 app.py - 
 app.js -
 
+ instalar 
+ npm install
+ torch
+ flask
+ flask_cors
+ opencv-python
+ pandas
+ pillow
+ requests
+ json
+gitpython>=3.1.30'
+setuptools>=70.0.0
 
+
+
+
+python app_geo.py
+npm start
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
